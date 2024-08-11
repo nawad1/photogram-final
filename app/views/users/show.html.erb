@@ -1,146 +1,96 @@
-<div>
-  <div>
-    <h1>
-      User #<%= @the_user.id %> details
-    </h1>
 
-    <div>
-      <div>
-        <a href="/users">
-          Go back
-        </a>
-      </div>
+<h1><%= @the_user.username %></h1>
+
+<dl>
+  <dt>Private</dt>
+  <dd><%= @the_user.private %></dd>
+
+  <dt>Followers</dt>
+  <dd>
+    <%= FollowRequest.where({ :recipient_id => @the_user}).where({ :status => "accepted"}).count %>
+
 
       <div>
-        <a href="/delete_user/<%= @the_user.id %>">
-          Delete user
-        </a>
-      </div>
+          <a href="/delete_follow_request/2027">
+            Unfollow
+          </a>
     </div>
 
-    <dl>
-      <dt>
-        Comment count
-      </dt>
-      <dd>
-        <%= @the_user.comment_count %>
-      </dd>
+  </dd>
 
-      <dt>
-        Email
-      </dt>
-      <dd>
-        <%= @the_user.email %>
-      </dd>
+  <dt>Following</dt>
+  <dd><%= FollowRequest.where({ :sender_id => @the_user}).where({ :status => "accepted"}).count %></dd>
 
-      <dt>
-        Password
-      </dt>
-      <dd>
-        <%= @the_user.password %>
-      </dd>
+</dl>
 
-      <dt>
-        Like count
-      </dt>
-      <dd>
-        <%= @the_user.like_count %>
-      </dd>
+<nav>
+  <ul>
+    <li>
+      <a href="/users/austin">Profile</a>
+    </li>
+    <li>
+      <a href="/users/austin/liked_photos">Liked photos</a>
+    </li>
+    <li>
+      <a href="/users/austin/feed">Feed</a>
+    </li>
+    <li>
+      <a href="/users/austin/discover">Discover</a>
+    </li>
+  </ul>
+</nav>
 
-      <dt>
-        Private
-      </dt>
-      <dd>
-        <%= @the_user.private %>
-      </dd>
+<h2>Own photos (<%= @the_user.photos.count %>)</h2>
 
-      <dt>
-        Username
-      </dt>
-      <dd>
-        <%= @the_user.username %>
-      </dd>
+<table border="1">
+  <tr>
+    <th>
+      Image
+    </th>
 
-      <dt>
-        Created at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@the_user.created_at) %> ago
-      </dd>
+    <th>
+      Owner
+    </th>
 
-      <dt>
-        Updated at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@the_user.updated_at) %> ago
-      </dd>
-    </dl>
-  </div>
-</div>
+    <th>
+      Caption
+    </th>
 
-<hr>
+    <th>
+      Posted
+    </th>
 
+    <th>
+      Likes
+    </th>
 
-<div>
-  <div>
-    <h2>
-      Edit user
-    </h2>
+    <th></th>
+  </tr>
 
-    <form action="/modify_user/<%= @the_user.id %>"  method="post" >
-      <div>
-        <label for="comment_count_box">
-          Comment count
-        </label>
+<% @list_of_photos.each do |a_photo| %>
+  <tr>
+    <td>
+      <img src="<%= a_photo.image %>">
+    </td>
 
-        <input type="text" id="comment_count_box" name="query_comment_count" value="<%= @the_user.comment_count %>">
-      </div>
+    <td>
+      <%= a_photo.owner.username %>
+    </td>
 
-      <div>
-        <label for="email_box">
-          Email
-        </label>
+    <td>
+      <%= a_photo.caption %>
+    </td>
 
-        <input type="text" id="email_box" name="query_email" value="<%= @the_user.email %>">
-      </div>
+    <td>
+      <%= time_ago_in_words(a_photo.created_at) %> ago
+    </td>
 
-      <div>
-        <label for="password_box">
-          Password
-        </label>
+    <td>
+      <%= a_photo.likes_count %>
+    </td>
 
-        <input type="text" id="password_box" name="query_password" value="<%= @the_user.password %>">
-      </div>
-
-      <div>
-        <label for="like_count_box">
-          Like count
-        </label>
-
-        <input type="text" id="like_count_box" name="query_like_count" value="<%= @the_user.like_count %>">
-      </div>
-
-      <div>
-        <input type="checkbox" id="private_box" name="query_private" value="1" <%= "checked" if @the_user.private %>>
-
-        <label for="private_box">
-            Private
-        </label>
-      </div>
-
-      <div>
-        <label for="username_box">
-          Username
-        </label>
-
-        <input type="text" id="username_box" name="query_username" value="<%= @the_user.username %>">
-      </div>
-
-      <button>
-        Update user
-      </button>
-    </form>
-  </div>
-</div>
-
-<hr>
+    <td>
+      <a href="/photos/<%= a_photo.id %>">Show details</a>
+    </td>
+  </tr>
+<% end %>

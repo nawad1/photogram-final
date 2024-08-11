@@ -10,4 +10,5 @@
 #  photo_id   :integer
 #
 class Comment < ApplicationRecord
+
 end

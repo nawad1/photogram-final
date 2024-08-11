@@ -9,4 +9,5 @@
 #  photo_id   :integer
 #
 class Like < ApplicationRecord
+
 end

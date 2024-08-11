@@ -1,58 +1,23 @@
 Rails.application.routes.draw do
-  # Routes for the User resource:
+  
   get("/", { :controller => "users", :action => "index"})
+
+  # Routes for the Like resource:
+
   # CREATE
-  post("/insert_user", { :controller => "users", :action => "create" })
+  post("/insert_like", { :controller => "likes", :action => "create" })
           
   # READ
-  get("/users", { :controller => "users", :action => "index" })
+  get("/likes", { :controller => "likes", :action => "index" })
   
-  get("/users/:path_id", { :controller => "users", :action => "show" })
+  get("/likes/:path_id", { :controller => "likes", :action => "show" })
   
   # UPDATE
   
-  post("/modify_user/:path_id", { :controller => "users", :action => "update" })
+  post("/modify_like/:path_id", { :controller => "likes", :action => "update" })
   
   # DELETE
-  get("/delete_user/:path_id", { :controller => "users", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Photo resource:
-
-  # CREATE
-  post("/insert_photo", { :controller => "photos", :action => "create" })
-          
-  # READ
-  get("/photos", { :controller => "photos", :action => "index" })
-  
-  get("/photos/:path_id", { :controller => "photos", :action => "show" })
-  
-  # UPDATE
-  
-  post("/modify_photo/:path_id", { :controller => "photos", :action => "update" })
-  
-  # DELETE
-  get("/delete_photo/:path_id", { :controller => "photos", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Comment resource:
-
-  # CREATE
-  post("/insert_comment", { :controller => "comments", :action => "create" })
-          
-  # READ
-  get("/comments", { :controller => "comments", :action => "index" })
-  
-  get("/comments/:path_id", { :controller => "comments", :action => "show" })
-  
-  # UPDATE
-  
-  post("/modify_comment/:path_id", { :controller => "comments", :action => "update" })
-  
-  # DELETE
-  get("/delete_comment/:path_id", { :controller => "comments", :action => "destroy" })
+  get("/delete_like/:path_id", { :controller => "likes", :action => "destroy" })
 
   #------------------------------
 
@@ -75,27 +40,77 @@ Rails.application.routes.draw do
 
   #------------------------------
 
-  # Routes for the Like resource:
+  # Routes for the Comment resource:
 
   # CREATE
-  post("/insert_like", { :controller => "likes", :action => "create" })
+  post("/insert_comment", { :controller => "comments", :action => "create" })
           
   # READ
-  get("/likes", { :controller => "likes", :action => "index" })
+  get("/comments", { :controller => "comments", :action => "index" })
   
-  get("/likes/:path_id", { :controller => "likes", :action => "show" })
+  get("/comments/:path_id", { :controller => "comments", :action => "show" })
   
   # UPDATE
   
-  post("/modify_like/:path_id", { :controller => "likes", :action => "update" })
+  post("/modify_comment/:path_id", { :controller => "comments", :action => "update" })
   
   # DELETE
-  get("/delete_like/:path_id", { :controller => "likes", :action => "destroy" })
+  get("/delete_comment/:path_id", { :controller => "comments", :action => "destroy" })
 
   #------------------------------
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # Routes for the Photo resource:
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  # CREATE
+  post("/insert_photo", { :controller => "photos", :action => "create" })
+          
+  # READ
+  get("/photos", { :controller => "photos", :action => "index" })
+  
+  get("/photos/:path_id", { :controller => "photos", :action => "show" })
+  
+  # UPDATE
+  
+  post("/modify_photo/:path_id", { :controller => "photos", :action => "update" })
+  
+  # DELETE
+  get("/delete_photo/:path_id", { :controller => "photos", :action => "destroy" })
+
+  #------------------------------
+
+  # Routes for the User account:
+
+  # SIGN UP FORM
+  get("/users/sign_up", { :controller => "user_authentication", :action => "sign_up_form" })        
+  # CREATE RECORD
+  post("/insert_user", { :controller => "user_authentication", :action => "create"  })
+      
+  # EDIT PROFILE FORM        
+  get("/edit_user_profile", { :controller => "user_authentication", :action => "edit_profile_form" })       
+  # UPDATE RECORD
+  post("/modify_user", { :controller => "user_authentication", :action => "update" })
+  
+  # DELETE RECORD
+  get("/cancel_user_account", { :controller => "user_authentication", :action => "destroy" })
+
+  # ------------------------------
+
+  # SIGN IN FORM
+  get("/users/sign_in", { :controller => "user_authentication", :action => "sign_in_form" })
+  # AUTHENTICATE AND STORE COOKIE
+  post("/user_verify_credentials", { :controller => "user_authentication", :action => "create_cookie" })
+  
+  # SIGN OUT        
+  get("/users/sign_out", { :controller => "user_authentication", :action => "destroy_cookies" })
+             
+  #------------------------------
+
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
+  # Users routes
+
+  get("/users", { :controller => "users", :action => "index"})
+
+  get("/users/:path_id", { :controller => "users", :action => "show"})
+  
 end
