@@ -15,14 +15,14 @@ class UserAuthenticationController < ApplicationController
       are_they_legit = user.authenticate(the_supplied_password)
     
       if are_they_legit == false
-        redirect_to("/user_sign_in", { :alert => "Incorrect password." })
+        redirect_to("/users/sign_in", { :alert => "Incorrect password." })
       else
         session[:user_id] = user.id
       
         redirect_to("/", { :notice => "Signed in successfully." })
       end
     else
-      redirect_to("/user_sign_in", { :alert => "No user with that email address." })
+      redirect_to("/users/sign_in", { :alert => "No user with that email address." })
     end
   end
 
@@ -41,8 +41,6 @@ class UserAuthenticationController < ApplicationController
     @user.email = params.fetch("query_email")
     @user.password = params.fetch("query_password")
     @user.password_confirmation = params.fetch("query_password_confirmation")
-    @user.comments_count = params.fetch("query_comments_count")
-    @user.likes_count = params.fetch("query_likes_count")
     @user.private = params.fetch("query_private", false)
     @user.username = params.fetch("query_username")
 
@@ -53,7 +51,7 @@ class UserAuthenticationController < ApplicationController
    
       redirect_to("/", { :notice => "User account created successfully."})
     else
-      redirect_to("/user_sign_up", { :alert => @user.errors.full_messages.to_sentence })
+      redirect_to("/users/sign_up", { :alert => @user.errors.full_messages.to_sentence })
     end
   end
     
@@ -66,8 +64,6 @@ class UserAuthenticationController < ApplicationController
     @user.email = params.fetch("query_email")
     @user.password = params.fetch("query_password")
     @user.password_confirmation = params.fetch("query_password_confirmation")
-    @user.comments_count = params.fetch("query_comments_count")
-    @user.likes_count = params.fetch("query_likes_count")
     @user.private = params.fetch("query_private", false)
     @user.username = params.fetch("query_username")
     

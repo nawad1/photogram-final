@@ -85,6 +85,7 @@ gem "table_print"
 gem "simple_form"
 gem "carrierwave"
 gem "cloudinary"
+gem "devise"
 
 group :development do
   gem "annotate"

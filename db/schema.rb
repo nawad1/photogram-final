@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_11_014835) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_11_142535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -50,7 +50,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_11_014835) do
   create_table "users", force: :cascade do |t|
     t.integer "comments_count"
     t.string "email"
-    t.string "password"
+    t.string "password_digest"
     t.integer "likes_count"
     t.boolean "private"
     t.string "username"

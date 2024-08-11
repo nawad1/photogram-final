@@ -19,18 +19,23 @@
           <td><%= a_thing.username %></td>
           <td><% if a_thing.private == false %>
           No
+          <% @request_status == 'Accepted' %>
           <% else %>
           Yes
+          <% @request_status == 'Pending' %>
           <% end %>  
           </td>
           <td><% if @current_user == nil %>
           
           <% else %>
-          <form action="follow">
+   
+          <form action="insert_follow_request" method="post">
             <label for="follow_request"></label>
             <button>Follow</button>
           </form>
+          <% @recipient_id = a_thing.id%>
           <% end %>
+ 
           </td>
           <td>
             <a href="/users/<%= a_thing.username %>">Show Details</a>
