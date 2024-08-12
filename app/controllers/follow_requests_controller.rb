@@ -18,16 +18,27 @@ class FollowRequestsController < ApplicationController
   end
 
   def create
-    the_follow_request = FollowRequest.new
-    the_follow_request.recipient_id = @recipient_id
-    the_follow_request.sender_id = @current_user.id
-    the_follow_request.status = @request_status
+    @the_follow_request = FollowRequest.new
+    @the_follow_request.sender_id = params.fetch("query_sender_id")
+    @the_follow_request.recipient_id = params.fetch("query_recipient_id")
+    @the_follow_request.status = params.fetch("query_status")
 
-    if the_follow_request.valid?
-      the_follow_request.save
-      redirect_to("/follow_requests", { :notice => "Follow request created successfully." })
+
+    if @the_follow_request.valid?
+      @the_follow_request.save
+    
+      # Fetch the recipient user
+      recipient = User.find_by(id: @the_follow_request.recipient_id)
+    
+      # Redirect to recipient's page if the user is not private
+      if recipient && !recipient.private
+        redirect_to user_path(recipient.username)
+      else
+        # Render some default page when the user is private or does not exist
+        redirect_to root_path
+      end
     else
-      redirect_to("/follow_requests", { :alert => the_follow_request.errors.full_messages.to_sentence })
+      render({ :template => "follow_requests/show" })
     end
   end
 
@@ -35,8 +46,8 @@ class FollowRequestsController < ApplicationController
     the_id = params.fetch("path_id")
     the_follow_request = FollowRequest.where({ :id => the_id }).at(0)
 
-    the_follow_request.recipient_id = params.fetch("query_recipient_id")
     the_follow_request.sender_id = params.fetch("query_sender_id")
+    the_follow_request.recipient_id = params.fetch("query_recipient_id")
     the_follow_request.status = params.fetch("query_status")
 
     if the_follow_request.valid?

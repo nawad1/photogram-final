@@ -10,9 +10,11 @@
 #  sender_id    :integer
 #
 class FollowRequest < ApplicationRecord
-  belongs_to :recipient, class_name: 'User', foreign_key: 'recipient_id'
-  belongs_to :sender, class_name: 'User', foreign_key: 'sender_id'
-
-  validates :recipient, presence: true
-  validates :sender, presence: true
+  belongs_to :sender, class_name: 'User', foreign_key: 'sender_id', required: true
+  belongs_to :recipient, class_name: 'User', foreign_key: 'recipient_id', required: true
+  
+  # Validations
+  validates :sender_id, presence: true
+  validates :recipient_id, presence: true, uniqueness: { scope: :sender_id, message: 'already requested' }
+  
 end

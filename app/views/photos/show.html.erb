@@ -70,7 +70,7 @@
       <dd>
         <%= time_ago_in_words(@the_photo.updated_at) %> ago
       </dd>
-    <dt>Fans</dt>
+
 <dd>
 <% @the_photo.likes.each do |fan| %>
   <%= fan.username %>

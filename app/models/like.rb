@@ -9,10 +9,12 @@
 #  photo_id   :integer
 #
 class Like < ApplicationRecord
-  belongs_to :fan, class_name: 'User', foreign_key: 'fan_id'
-  belongs_to :photo, class_name: 'Photo', foreign_key: 'photo_id'
-
-  validates :fan, presence: true
-  validates :photo, presence: true
+  belongs_to :user, class_name: 'User', foreign_key: 'user_id', required: true
+  belongs_to :photo, class_name: 'Photo', foreign_key: 'photo_id', counter_cache: true, required: true
+  
+  # Validations
+  validates :user_id, presence: true
+  validates :photo_id, presence: true, uniqueness: { scope: :user_id, message: 'already liked' }
+  
 
 end

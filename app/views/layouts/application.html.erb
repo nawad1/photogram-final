@@ -21,7 +21,7 @@
         <li><a href="/users">All users</a></li>
         <li><a href="/photos">All public photos</a></li>
         <% if session[:user_id] != nil %>
-          <li><a href="/edit_user_profile"><%= @current_user.username %></a></li>
+          <li><a href="/users/edit"><%= @current_user.username %></a></li>
           <li><a href="/users/sign_out">Sign out</a></li>
         <% else %>
           <li><a href="/users/sign_in">Sign in</a></li>

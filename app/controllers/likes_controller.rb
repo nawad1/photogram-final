@@ -19,14 +19,14 @@ class LikesController < ApplicationController
 
   def create
     the_like = Like.new
-    the_like.fan_id = params.fetch("query_fan_id")
+    the_like.user_id = current_user.id # Assuming you have a method current_user
     the_like.photo_id = params.fetch("query_photo_id")
 
     if the_like.valid?
       the_like.save
-      redirect_to("/likes", { :notice => "Like created successfully." })
+      redirect_to(request.referer, { :notice => "You've successfully liked this photo." })
     else
-      redirect_to("/likes", { :alert => the_like.errors.full_messages.to_sentence })
+      redirect_to(request.referer, { :alert => the_like.errors.full_messages.to_sentence })
     end
   end
 
@@ -34,7 +34,7 @@ class LikesController < ApplicationController
     the_id = params.fetch("path_id")
     the_like = Like.where({ :id => the_id }).at(0)
 
-    the_like.fan_id = params.fetch("query_fan_id")
+    the_like.user_id = params.fetch("query_user_id")
     the_like.photo_id = params.fetch("query_photo_id")
 
     if the_like.valid?

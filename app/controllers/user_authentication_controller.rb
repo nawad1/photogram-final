@@ -2,6 +2,15 @@ class UserAuthenticationController < ApplicationController
   # Uncomment line 3 in this file and line 5 in ApplicationController if you want to force users to sign in before any other actions.
   # skip_before_action(:force_user_sign_in, { :only => [:sign_up_form, :create, :sign_in_form, :create_cookie] })
 
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  end
+
+  def index
+    render({ :template => "user_authentication/index" })
+  end
+  
+
   def sign_in_form
     render({ :template => "user_authentication/sign_in" })
   end
@@ -41,8 +50,12 @@ class UserAuthenticationController < ApplicationController
     @user.email = params.fetch("query_email")
     @user.password = params.fetch("query_password")
     @user.password_confirmation = params.fetch("query_password_confirmation")
-    @user.private = params.fetch("query_private", false)
     @user.username = params.fetch("query_username")
+    @user.private = params.fetch("query_private", false)
+    @user.likes_count = params.fetch("query_likes_count", 0)
+    @user.comments_count = params.fetch("query_comments_count", 0)
+    @user.sent_follow_requests ||= @user.sent_follow_requests
+    @user.received_follow_requests ||= @user.received_follow_requests
 
     save_status = @user.save
 
@@ -54,7 +67,11 @@ class UserAuthenticationController < ApplicationController
       redirect_to("/users/sign_up", { :alert => @user.errors.full_messages.to_sentence })
     end
   end
-    
+
+  def edit
+    @user = User.find(params[:id])
+  end
+  
   def edit_profile_form
     render({ :template => "user_authentication/edit_profile" })
   end
@@ -62,19 +79,20 @@ class UserAuthenticationController < ApplicationController
   def update
     @user = @current_user
     @user.email = params.fetch("query_email")
-    @user.password = params.fetch("query_password")
-    @user.password_confirmation = params.fetch("query_password_confirmation")
-    @user.private = params.fetch("query_private", false)
+    @user.password = params.fetch("current_password")
     @user.username = params.fetch("query_username")
-    
+    @user.private = params.fetch("query_private", false)
+    @user.likes_count = params.fetch("query_likes_count", 0)
+    @user.comments_count = params.fetch("query_comments_count", 0)
+  
     if @user.valid?
       @user.save
-
       redirect_to("/", { :notice => "User account updated successfully."})
     else
       render({ :template => "user_authentication/edit_profile_with_errors" , :alert => @user.errors.full_messages.to_sentence })
     end
   end
+  
 
   def destroy
     @current_user.destroy
