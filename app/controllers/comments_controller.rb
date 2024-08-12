@@ -1,60 +1,50 @@
 class CommentsController < ApplicationController
+  before_action :set_comment, only: [:show, :update, :destroy]
+
   def index
-    matching_comments = Comment.all
-
-    @list_of_comments = matching_comments.order({ :created_at => :desc })
-
-    render({ :template => "comments/index" })
+    @list_of_comments = Comment.all.order(created_at: :desc)
+    render template: "comments/index"
   end
 
   def show
-    the_id = params.fetch("path_id")
-
-    matching_comments = Comment.where({ :id => the_id })
-
-    @the_comment = matching_comments.at(0)
-
-    render({ :template => "comments/show" })
+    render template: "comments/show"
   end
 
   def create
     comment = Comment.new
-    comment.author_id = session.fetch(:user_id)
-    comment.photo_id = params.fetch("input_photo_id")
-    comment.body = params.fetch("input_body")
-  
-    
-    comment.commenter_id = current_user.id
+    comment.author_id = session.fetch(:user_id) # Ensure this matches your session setup
+    comment.photo_id = params.fetch("query_photo_id")
+    comment.body = params.fetch("query_body")
   
     if comment.save
-      redirect_to("/photos/#{comment.photo_id}", { :notice => "Comment created successfully." })
+      redirect_to("/photos/#{comment.photo_id}", notice: "Comment created successfully.")
     else
-      redirect_to("/photos/#{comment.photo_id}", { :alert => comment.errors.full_messages.to_sentence })
+      redirect_to("/photos/#{comment.photo_id}", alert: comment.errors.full_messages.to_sentence)
     end
   end
 
   def update
-    the_id = params.fetch("path_id")
-    the_comment = Comment.where({ :id => the_id }).at(0)
+    @comment.author_id = params.fetch("query_author_id")
+    @comment.body = params.fetch("query_body")
+    @comment.photo_id = params.fetch("query_photo_id")
 
-    the_comment.commenter_id = params.fetch("query_commenter_id")
-    the_comment.body = params.fetch("query_body")
-    the_comment.photo_id = params.fetch("query_photo_id")
-
-    if the_comment.valid?
-      the_comment.save
-      redirect_to("/comments/#{the_comment.id}", { :notice => "Comment updated successfully."} )
+    if @comment.save
+      redirect_to("/comments/#{@comment.id}", notice: "Comment updated successfully.")
     else
-      redirect_to("/comments/#{the_comment.id}", { :alert => the_comment.errors.full_messages.to_sentence })
+      redirect_to("/comments/#{@comment.id}", alert: @comment.errors.full_messages.to_sentence)
     end
   end
 
   def destroy
-    the_id = params.fetch("path_id")
-    the_comment = Comment.where({ :id => the_id }).at(0)
+    @comment.destroy
+    redirect_to("/comments", notice: "Comment deleted successfully.")
+  end
 
-    the_comment.destroy
+  private
 
-    redirect_to("/comments", { :notice => "Comment deleted successfully."} )
+  def set_comment
+    @comment = Comment.find(params.fetch("path_id"))
+  rescue ActiveRecord::RecordNotFound
+    redirect_to("/comments", alert: "Comment not found.")
   end
 end

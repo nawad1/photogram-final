@@ -12,6 +12,8 @@ class UsersController < ApplicationController
     if @current_user == nil
       redirect_to :controller => 'user_authentication', :action => 'sign_in_form'
     else 
+      the_username = params.fetch(:username)
+      @user = User.find_by(username: the_username)
       render({ :template => "users/show" })
     end
   end
@@ -57,30 +59,51 @@ class UsersController < ApplicationController
     redirect_back(fallback_location: root_path)
   end
   
-  private
   
   def authorized_to_cancel?(user, follow_request)
     # replace with your authorization logic
     user == follow_request.sender
   end
 
+
   def feed
-    @user = User.find(params[:user_id])
-    @photos = @user.following.flat_map { |user| user.own_photos }.sort_by(&:created_at).reverse
+    @user = User.find_by(username: params[:username])
+    following_ids = FollowRequest.where(recipient_id: @user.id, status: 'accepted').pluck(:sender_id)
+    @photos = Photo.where(owner_id: following_ids).order(created_at: :desc)
+    
+    render :feed
   end
-  
+
   def discovery
-    @user = User.find(params[:user_id])
-    @photos = @user.following.flat_map { |user| user.likes.map(&:photo) }.sort_by(&:created_at).reverse
+    @user = User.find_by(username: params[:username])
+    following_ids = FollowRequest.where(sender_id: @user.id, status: 'accepted').pluck(:recipient_id)
+    liked_photo_ids = Like.where(fan_id: following_ids).pluck(:photo_id).uniq
+    @photos = Photo.where(id: liked_photo_ids).order(created_at: :desc)
+    
+    html = "<h1>Discover Photos</h1>"
+
+    if photos.any?
+      html += "<ul>"
+      photos.each do |photo|
+        html += "<li>"
+        html += "<img src='#{photo.image.url}' alt='#{photo.caption}' style='max-width: 300px;' />"
+        html += "<p>#{photo.caption}</p>"
+        html += "<p>Posted by: #{User.find(photo.owner_id).username}</p>"
+        html += "</li>"
+      end
+      html += "</ul>"
+    else
+      html += "<p>No photos found in discover.</p>"
+    end
+
+    render html: html.html_safe
   end
 
   def liked_photos
-    @user = User.find_by(id: params[:id])
-    if @user.nil?
-      redirect_to root_path, alert: "User not found"
-      return
-    end
-    @photos = @user.liked_photos
+    @user = User.find_by(username: params[:username])
+    @photos = Photo.joins(:likes).where(likes: { fan_id: @user.id }).order('likes.created_at DESC')
+    
+    render :liked_photos
   end
   
   def edit
@@ -91,4 +114,5 @@ class UsersController < ApplicationController
       render 'edit_profile'
     end
   end
+
 end

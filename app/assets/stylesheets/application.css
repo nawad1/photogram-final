@@ -13,3 +13,7 @@
  *= require_tree .
  *= require_self
  */
+ .small-image {
+  width: 100px;  /* Adjust the width as needed */
+  height: auto;  /* Maintains aspect ratio */
+}

@@ -10,12 +10,11 @@
 #  photo_id   :integer
 #
 class Comment < ApplicationRecord
-  belongs_to :commenter, class_name: 'User', foreign_key: 'commenter_id', required: true
+  belongs_to :author, class_name: 'User', foreign_key: 'author_id', required: true
   belongs_to :photo, class_name: 'Photo', foreign_key: 'photo_id', counter_cache: true, required: true
   
   # Validations
   validates :photo_id, presence: true
-  validates :commenter_id, presence: true
+  validates :author_id, presence: true
   validates :body, presence: true
-  
 end

@@ -41,4 +41,6 @@ class User < ApplicationRecord
   def sent_request_to?(other_user)
     FollowRequest.exists?(sender_id: id, recipient_id: other_user.id)
   end
+
+
 end

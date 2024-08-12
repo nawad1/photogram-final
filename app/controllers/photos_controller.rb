@@ -4,9 +4,14 @@ class PhotosController < ApplicationController
   end
 
   def show
+   if  @current_user == nil
+    redirect_to("/users/sign_in", notice: "You need to sign in or sign up before continuing.")
+
+   else
     the_id = params.fetch(:path_id)
     @photo = Photo.where({ :id => the_id }).first
     render({ :template => "photos/show" })
+   end
   end
 
   def new
@@ -18,9 +23,9 @@ class PhotosController < ApplicationController
     the_photo.caption = params.fetch("query_caption")
     the_photo.image = params.fetch("query_image")
     the_photo.owner_id = params.fetch("query_owner_id")
-    the_photo.save
+ 
 
-      redirect_to photos_path, notice: 'Photo created successfully.'
+      redirect_to photos_path, notice: 'Photo created successfully'
 
   end
 

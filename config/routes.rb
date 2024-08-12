@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-    root to: "users#index"
+  devise_for :users, controllers: { sessions: 'users/sessions' }
+
+  
+  root to: "users#index"
     get("/users", {:controller => "users", :action => "index"})
   
 
@@ -29,7 +32,7 @@ Rails.application.routes.draw do
     # SIGN OUT        
     get("/users/sign_out", { :controller => "user_authentication", :action => "destroy_cookies" })
 
-    get("/users/:id", { :controller => "users", :action => "show" })
+    get("/users/:username", { :controller => "users", :action => "show" })
 
     # Routes for the Comment resource:
   
@@ -49,12 +52,16 @@ Rails.application.routes.draw do
     get("/delete_comment/:path_id", { :controller => "comments", :action => "destroy" })
   
     #------------------------------
-  
+  get '/users/:username/feed', to: 'users#feed', as: 'user_feed'
+  # config/routes.rb
+get '/users/:username/liked_photos', to: 'users#liked_photos', as: 'user_liked_photos'
+# config/routes.rb
+get '/users/:username/discover', to: 'users#discover', as: 'user_discover'
+
     # Routes for the Follow request resource:
     resources :users do
       member do
         get 'liked_photos', to: 'users#liked_photos'
-        get 'feed', to: 'users#feed'
         get 'discovery', to: 'users#discovery'
         post 'follow', to: 'users#follow'
         delete 'unfollow', to: 'users#unfollow'
@@ -93,7 +100,7 @@ Rails.application.routes.draw do
     post("/modify_like/:path_id", { :controller => "likes", :action => "update" })
     
     # DELETE
-    get("/delete_like/:path_id", { :controller => "likes", :action => "destroy" })
+    get("/delete_like", { :controller => "likes", :action => "destroy" })
   
     #------------------------------
   
