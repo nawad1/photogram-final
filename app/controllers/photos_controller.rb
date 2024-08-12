@@ -4,7 +4,9 @@ class PhotosController < ApplicationController
   end
 
   def show
-    @photo = Photo.includes(comments: :commenter).find(params[:path_id])
+    the_id = params.fetch(:path_id)
+    @photo = Photo.where({ :id => the_id }).first
+    render({ :template => "photos/show" })
   end
 
   def new
@@ -12,14 +14,14 @@ class PhotosController < ApplicationController
   end
 
   def create
-    @photo = Photo.new(photo_params)
-    @photo.owner_id = session[:user_id] if session[:user_id] 
-    @photo.image = params[:image]
-    if @photo.save
+    the_photo = Photo.new
+    the_photo.caption = params.fetch("query_caption")
+    the_photo.image = params.fetch("query_image")
+    the_photo.owner_id = params.fetch("query_owner_id")
+    the_photo.save
+
       redirect_to photos_path, notice: 'Photo created successfully.'
-    else
-      render :new, alert: @photo.errors.full_messages.to_sentence
-    end
+
   end
 
   def edit

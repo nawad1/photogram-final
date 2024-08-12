@@ -7,6 +7,7 @@
 #  updated_at :datetime         not null
 #  fan_id     :integer
 #  photo_id   :integer
+#  user_id    :integer
 #
 class Like < ApplicationRecord
   belongs_to :user, class_name: 'User', foreign_key: 'user_id', required: true

@@ -1,7 +1,7 @@
 Cloudinary.config do |config|
-  config.cloud_name = ENV["photogram"]
-  config.api_key = ENV["441767553683461"]
-  config.api_secret = ENV["DKBAtfInHDefMtmil_nGilMv9-E"]
-  config.secure = true
+  config.cloud_name = ENV["CLOUDINARY_CLOUD_NAME"]
+  config.api_key = ENV["CLOUDINARY_API_KEY"]
+  config.api_secret = ENV["CLOUDINARY_API_SECRET"]
   config.cdn_subdomain = true
+  config.secure = true
 end

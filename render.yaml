@@ -5,6 +5,12 @@ services:
     plan: free # make sure to set this to free or you'll get billed $$$
     buildCommand: "./bin/render-build.sh" # # we already created these two files for you
     startCommand: "./bin/render-start.sh"
-    envVars: # this section sets some ENV variables needed by Render for deployment
-      - key: SECRET_KEY_BASE
-        generateValue: true
+envVars:  # This section sets some ENV variables needed by Render for deployment
+  - key: SECRET_KEY_BASE
+    generateValue: true
+  - key: CLOUDINARY_CLOUD_NAME
+    value: photogram
+  - key: CLOUDINARY_API_KEY
+    value: 441767553683461
+  - key: CLOUDINARY_API_SECRET
+    value: DKBAtfInHDefMtmil_nGilMv9-E
