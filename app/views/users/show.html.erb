@@ -7,6 +7,17 @@
   
     <dt>Followers</dt>
     <dd><%= @user.followers.count %></dd>
+
+
+      <dt>Pending follow requests</dt>
+        <% following_ids = FollowRequest.where(recipient_id: @current_user.id, status: 'pending').pluck(:sender_id) %>
+        <% user_ids = User.where(:id => following_ids)%>
+        <% User.where(:id => user_ids).each do |following| %>
+    
+        <dd><%= following.username %></dd>
+        <dd><%= following.username.upcase! %></dd>
+    <% end %>
+
   
   <td><% if current_user.following?(@user) %>
   <%= form_with(url: unfollow_user_path(@user), method: :post) do %>
@@ -80,7 +91,7 @@
         <td><%= photo.owner.username %></td>
         <td><%= photo.caption %></td>
         <td><%= time_ago_in_words(photo.created_at) %> ago</td>
-        <td><%= photo.likes.count %></td>
+        <td><%= 2 %></td>
         <td><%= link_to "Show details", "/photos/#{photo.id}" %></td>
       </tr>
     <% end %>
