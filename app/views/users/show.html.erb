@@ -91,7 +91,7 @@
         <td><%= photo.owner.username %></td>
         <td><%= photo.caption %></td>
         <td><%= time_ago_in_words(photo.created_at) %> ago</td>
-        <td><%= 2 %></td>
+        <td><%= photo.likes.count %></td>
         <td><%= link_to "Show details", "/photos/#{photo.id}" %></td>
       </tr>
     <% end %>
