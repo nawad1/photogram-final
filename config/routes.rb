@@ -119,7 +119,7 @@ get '/users/:username/discover', to: 'users#discover', as: 'user_discover'
             
     # READ
     get("/photos", { :controller => "photos", :action => "index" })
-    
+    post("/photos", { :controller => "photos", :action => "index" })
     get("/photos/:path_id", { :controller => "photos", :action => "show" })
     
     # UPDATE

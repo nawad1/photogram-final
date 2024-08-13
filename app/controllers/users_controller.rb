@@ -66,37 +66,31 @@ class UsersController < ApplicationController
   end
 
 
+
+
   def feed
     @user = User.find_by(username: params[:username])
-    following_ids = FollowRequest.where(recipient_id: @user.id, status: 'accepted').pluck(:sender_id)
-    @photos = Photo.where(owner_id: following_ids).order(created_at: :desc)
     
-    render :feed
+    # Fetch the IDs of users that @user is following with 'accepted' status
+    following_ids = FollowRequest.where(sender_id: @user.id, status: 'accepted').pluck(:recipient_id)
+    
+    # Fetch photos posted by the users that the current user is following
+    liked_photo_ids = Photo.where(owner_id: following_ids).pluck(:id)
+    
+    # Retrieve the photos and sort by creation date in descending order
+    @photos = Photo.where(id: liked_photo_ids).order(created_at: :desc)
+    
+    render({ template: "users/feed" })
   end
 
+  
   def discovery
     @user = User.find_by(username: params[:username])
     following_ids = FollowRequest.where(sender_id: @user.id, status: 'accepted').pluck(:recipient_id)
     liked_photo_ids = Like.where(fan_id: following_ids).pluck(:photo_id).uniq
     @photos = Photo.where(id: liked_photo_ids).order(created_at: :desc)
     
-    html = "<h1>Discover Photos</h1>"
 
-    if photos.any?
-      html += "<ul>"
-      photos.each do |photo|
-        html += "<li>"
-        html += "<img src='#{photo.image.url}' alt='#{photo.caption}' style='max-width: 300px;' />"
-        html += "<p>#{photo.caption}</p>"
-        html += "<p>Posted by: #{User.find(photo.owner_id).username}</p>"
-        html += "</li>"
-      end
-      html += "</ul>"
-    else
-      html += "<p>No photos found in discover.</p>"
-    end
-
-    render html: html.html_safe
   end
 
   def liked_photos

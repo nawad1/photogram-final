@@ -20,12 +20,12 @@ class PhotosController < ApplicationController
 
   def create
     the_photo = Photo.new
-    the_photo.caption = params.fetch("query_caption")
+    the_photo.caption = params.fetch("caption")
     the_photo.image = params.fetch("query_image")
     the_photo.owner_id = params.fetch("query_owner_id")
- 
 
-      redirect_to photos_path, notice: 'Photo created successfully'
+
+    redirect_to("/photos", notice: "Photo created successfully")
 
   end
 

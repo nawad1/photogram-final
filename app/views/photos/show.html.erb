@@ -16,7 +16,7 @@
   <dl>
     <dt>Image</dt>
     <dd>
-      <%= image_tag @photo.image.url  %>
+      <%= @photo.caption  %>
     </dd>
 
     <dt>Caption</dt>
@@ -35,7 +35,7 @@
     </dd>
 
     <dt>Likes count</dt>
-    <dd><%= @photo.likes_count %></dd>
+    <dd><%= @photo.likes.count %></dd>
 
     <dt>Comments count</dt>
     <dd><%= @photo.comments_count %></dd>

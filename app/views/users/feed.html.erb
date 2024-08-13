@@ -10,9 +10,8 @@
   
   <td><% if current_user.following?(@user) %>
   <%= form_with(url: unfollow_user_path(@user), method: :post) do %>
-     <a href=""/delete_follow_request/:user_id">
-        Unfollow
-        </a>
+    <%= hidden_field_tag :_method, :delete %>
+    <%= submit_tag 'Unfollow', style: 'background: none!important;border: none;padding: 0!important;color: blue;text-decoration: underline;cursor: pointer;' %>
   <% end %>
 <% else %>
   <form action="/insert_follow_request" method="post">
@@ -46,9 +45,9 @@
   </ul>
 </nav>
 
-<h2>Own photos (<%= @user.own_photos.count %>)</h2>
+<h2>Feed (<%= @photos.count %>)</h2>
 
-<table border=".5">
+<table border="1">
   <tr>
     <th>
       Image
@@ -72,17 +71,19 @@
 
     <th></th>
     </tr>
-
-
-    <% @user.own_photos.each do |photo| %>
+  </thead>
+  <tbody>
+    <% @photos.each do |photo| %>
+    
       <tr>
         <td><%= photo.owner.username %></td>
         <td><%= photo.owner.username %></td>
         <td><%= photo.caption %></td>
         <td><%= time_ago_in_words(photo.created_at) %> ago</td>
-        <td><%= photo.likes.count %></td>
+        <td><%= photo.likes_count %></td>
         <td><%= link_to "Show details", "/photos/#{photo.id}" %></td>
       </tr>
-    <% end %>
-
+      <% end %>
+  
+  </tbody>
 </table>

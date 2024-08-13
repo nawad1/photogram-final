@@ -13,33 +13,63 @@
       <td><%= user.username %></td>
       <td><%= user.private ? 'Yes' : 'No' %></td>
       <td>
-        <% if current_user && current_user != user %> <!-- Ensure users can't follow themselves -->
-          <% if user.private && current_user.sent_request_to?(user) %>
-            <p>Request sent.</p>
-            <form action="<%= cancel_request_path(user) %>" method="post">
-              <input type="hidden" name="_method" value="delete">
-              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-              <button type="submit" style="background: none!important; border: none; padding: 0!important; color: blue; text-decoration: underline; cursor: pointer;">
-                Cancel
-              </button>
-            </form>
-          <% elsif current_user.following?(user) %>
-            <%= form_with(url: unfollow_user_path(user), method: :delete, local: true) do %>
-              <button type="submit" style="background: none!important; border: none; padding: 0!important; color: blue; text-decoration: underline; cursor: pointer;">
-                Unfollow
-              </button>
-            <% end %>
-          <% else %>
-            <%= form_with(url: insert_follow_request_path, method: :post, local: true) do %>
-              <%= hidden_field_tag 'query_sender_id', current_user.id %>
-              <%= hidden_field_tag 'query_recipient_id', user.id %>
-              <%= hidden_field_tag 'query_status', 'pending' %>
-              <button type="submit" style="background: none!important; border: none; padding: 0!important; color: blue; text-decoration: underline; cursor: pointer;">
-                Follow
-              </button>
-            <% end %>
-          <% end %>
-        <% end %>
+
+
+<% if current_user %>
+  <% if current_user != user %> 
+<% the_request = FollowRequest.find_by(sender_id: current_user.id, recipient_id: user.id) %>
+<% if the_request && the_request.status == 'pending' %>
+
+
+      <form action="<%= cancel_request_path(user) %>" method="post">
+        <input type="hidden" name="_method" value="delete">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      </form>
+        Request sent
+        <a href=""/delete_follow_request/:user_id">
+        Cancel
+        </a>
+
+
+    <% elsif current_user.following?(user) %>
+      <%= form_with(url: unfollow_user_path(user), method: :delete, local: true) do %>
+
+
+     <a href=""/delete_follow_request/:user_id">
+        Unfollow
+        </a>
+      <% end %>
+    <% else %>
+      <%= form_with(url: insert_follow_request_path, method: :post, local: true) do %>
+        <%= hidden_field_tag 'query_sender_id', current_user.id %>
+        <%= hidden_field_tag 'query_recipient_id', user.id %>
+        <%= hidden_field_tag 'query_status', 'pending' %>
+        <button>
+          Follow
+        </button>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%# If the user is trying to follow themselves %>
+    <% if current_user.following?(user) %>
+      <%= form_with(url: unfollow_user_path(user), method: :delete, local: true) do %>
+        <button type="submit">
+          Unfollow
+        </button>
+      <% end %>
+    <% else %>
+      <%= form_with(url: insert_follow_request_path, method: :post, local: true) do %>
+        <%= hidden_field_tag 'query_sender_id', current_user.id %>
+        <%= hidden_field_tag 'query_recipient_id', user.id %>
+        <%= hidden_field_tag 'query_status', 'pending' %>
+        <button>
+          Follow
+        </button>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
       </td>
       <td><a href="<%= user_path(user.username) %>">Show details</a></td>
     </tr>
